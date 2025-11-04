@@ -9,6 +9,7 @@ function Home() {
   const [username, setUsername] = useState('');
   const [thinking, setThinking] = useState(false);
   const chatEndRef = useRef(null);
+  const [bgImage, setBgImage] = useState(process.env.PUBLIC_URL ? process.env.PUBLIC_URL + '/images/law.webp' : '/images/law.webp');
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('lawUser'));
@@ -22,6 +23,16 @@ function Home() {
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, thinking]);
+
+  // Preload background image and fall back to constitution.webp if law.webp not present
+  useEffect(() => {
+    const preferred = process.env.PUBLIC_URL ? process.env.PUBLIC_URL + '/images/law.webp' : '/images/law.webp';
+    const fallback = process.env.PUBLIC_URL ? process.env.PUBLIC_URL + '/images/constitution.webp' : '/images/constitution.webp';
+    const img = new Image();
+    img.src = preferred;
+    img.onload = () => setBgImage(preferred);
+    img.onerror = () => setBgImage(fallback);
+  }, []);
 
   // Use environment variable for API URL
   const API_URL = process.env.REACT_APP_API_URL || '/api/chat';
@@ -58,8 +69,8 @@ function Home() {
   return (
     <div
       style={{
-        // Use public folder for image path
-        background: `url(${process.env.PUBLIC_URL ? process.env.PUBLIC_URL + '/images/law.webp' : '/images/law.webp'}) no-repeat center center fixed`,
+        // Use public folder for image path (with runtime fallback handled above)
+        background: `url(${bgImage}) no-repeat center center fixed`,
         backgroundSize: 'cover',
         minHeight: '100vh',
         display: 'flex',
