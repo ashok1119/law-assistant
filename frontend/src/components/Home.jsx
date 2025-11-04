@@ -23,8 +23,19 @@ function Home() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, thinking]);
 
-  // Use environment variable for API URL
-  const API_URL = process.env.REACT_APP_API_URL || '/api/chat';
+  // Use environment variable for API URL. Ensure it always targets the chat endpoint.
+  const buildApiUrl = (base) => {
+    // If nothing provided, use local relative chat path used by CRA proxy or server
+    if (!base) return '/api/chat';
+    // Trim trailing slashes
+    const trimmed = base.replace(/\/+$/, '');
+    // If it already points to /chat, return as-is
+    if (trimmed.endsWith('/chat')) return trimmed;
+    // If it ends with /api (or any other base), append /chat
+    return `${trimmed}/chat`;
+  };
+
+  const API_URL = buildApiUrl(process.env.REACT_APP_API_URL);
 
   const handleSubmit = async () => {
     const prompt = input.trim();
