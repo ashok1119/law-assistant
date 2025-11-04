@@ -52,7 +52,7 @@ function Login() {
     <div
       style={{
         fontFamily: 'Segoe UI, sans-serif',
-        background: `url("/Rule-of-Law.jpg") no-repeat center center fixed`, // ✅ use image in public folder
+        background: `url(${process.env.PUBLIC_URL || ""}/images/constitution.webp) no-repeat center center fixed`,
         backgroundSize: 'cover', // fill the screen nicely
         display: 'flex',
         justifyContent: 'flex-start',
