@@ -15,6 +15,7 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const app = express();
 
 // Config
+
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/';
 const DB_NAME = process.env.DB_NAME || 'idpdb';
@@ -30,7 +31,9 @@ app.use('/api/chat', chatRouter);
 
 // Health
 app.get('/health', (req, res) => res.json({ ok: true }));
-
+app.get('/', (req, res) => {
+  res.send('server is running');
+});
 // Mongo connect and start
 mongoose
   .connect(MONGO_URI, {
