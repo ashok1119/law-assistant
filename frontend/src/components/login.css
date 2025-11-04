@@ -2,7 +2,7 @@ body {
   font-family: "Segoe UI", sans-serif;
   
   background-size: cover; 
-  background: url("C:\Users\chowd\Downloads\important-article-of-indian-constitution.webp") no-repeat center center fixed; /* ✅ use cover instead of contain for full-screen */
+  background: url("/frontend/build/images/1.webp") no-repeat center center fixed; /* ✅ use cover instead of contain for full-screen */
   display: flex;
   justify-content: flex-start;
   align-items: center;

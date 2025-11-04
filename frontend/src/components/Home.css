@@ -4,7 +4,7 @@
 body {
     font-family: "Segoe UI", sans-serif;
     /* WARNING: File path 'C:/Users/chowd/Downloads/Rule-of-Law.jpg' will NOT work on a web server or other computers. Use a relative path like 'Rule-of-Law.jpg' */
-    background: url("C:/Users/chowd/Downloads/Rule-of-Law.jpg") no-repeat center center fixed;
+    background: url("/frontend/build/images/1.webp") no-repeat center center fixed;
     background-size: cover;
     
     /* Centering logic: The body is a flex container */
