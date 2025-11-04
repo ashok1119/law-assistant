@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import authRouter from './routes/auth.js';
 import chatRouter from './routes/chat.js';
 
-// Load .env from the backend folder regardless of where the server is started
+// Load .env from backend folder
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -15,70 +15,60 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const app = express();
 
 // Config
-
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/';
 const DB_NAME = process.env.DB_NAME || 'idpdb';
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
-// Support comma-separated origins in env var, e.g. "https://app.vercel.app,http://localhost:3000"
-const allowedOrigins = Array.isArray(CORS_ORIGIN)
-  ? CORS_ORIGIN
-  : String(CORS_ORIGIN)
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+// ✅ Frontend URLs allowed (both local + production)
+const allowedOrigins = [
+  'https://law-assistant-go.vercel.app', // your production frontend
+  'http://localhost:3000',               // local dev
+];
 
-// Log allowed origins for debugging in server logs
-console.log('CORS allowed origins:', allowedOrigins);
+// ✅ Enable CORS safely using middleware
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like server-to-server, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 200, // For legacy browsers
+  })
+);
 
-// Custom CORS middleware: explicitly set CORS headers when origin is allowed
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  // Debug log incoming origin (useful on Vercel to see request origin)
-  if (origin) console.log('Incoming origin:', origin);
+// ✅ Handle preflight requests globally
+app.options('*', cors());
 
-  // Allow requests with no origin (curl, server-to-server)
-  if (!origin) return next();
-
-  const isAllowed = allowedOrigins.includes('*') || allowedOrigins.includes(origin);
-
-  if (isAllowed) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Authorization,Content-Type');
-  }
-
-  // Respond to preflight immediately
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(isAllowed ? 200 : 403);
-  }
-
-  return next();
-});
+// ✅ Parse JSON requests
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/chat', chatRouter);
 
-// Health
+// Health check
 app.get('/health', (req, res) => res.json({ ok: true }));
-app.get('/', (req, res) => {
-  res.send('server is running');
-});
-// Mongo connect and start
+app.get('/', (req, res) => res.send('Server is running ✅'));
+
+// MongoDB connection
 mongoose
   .connect(MONGO_URI, {
     serverSelectionTimeoutMS: 5000,
     dbName: DB_NAME,
   })
   .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    console.log('✅ Connected to MongoDB');
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
+    console.error('❌ MongoDB connection error:', err.message);
     process.exit(1);
   });
