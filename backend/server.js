@@ -21,8 +21,29 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/';
 const DB_NAME = process.env.DB_NAME || 'idpdb';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
-// Middleware
-app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
+// Support comma-separated origins in env var, e.g. "https://app.vercel.app,http://localhost:3000"
+const allowedOrigins = Array.isArray(CORS_ORIGIN)
+  ? CORS_ORIGIN
+  : String(CORS_ORIGIN)
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+// Middleware: dynamic origin check so we can allow multiple origins (including localhost)
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin like mobile apps or curl
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      // Not allowed
+      return callback(new Error('CORS policy: Origin not allowed'), false);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Routes
