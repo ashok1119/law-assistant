@@ -1,0 +1,48 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  
+  background-size: cover; 
+  background: url("C:\Users\chowd\Downloads\important-article-of-indian-constitution.webp") no-repeat center center fixed; /* ✅ use cover instead of contain for full-screen */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  padding-left: 50px;
+  margin: 0;  /* ✅ remove browser default margins */
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+input,
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+button {
+  background: #3498db;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+#loginError {
+  color: red;
+  margin-top: 10px;
+}
