@@ -2,8 +2,7 @@ body {
   font-family: "Segoe UI", sans-serif;
   
   background-size: cover; 
-  /* Use public images folder; provide a fallback to constitution.webp if 1.webp is missing */
-  background: url('/images/constitution.webp') no-repeat center center fixed; /* ✅ use cover instead of contain for full-screen */
+  background: url("/frontend/build/images/1.webp") no-repeat center center fixed; /* ✅ use cover instead of contain for full-screen */
   display: flex;
   justify-content: flex-start;
   align-items: center;
