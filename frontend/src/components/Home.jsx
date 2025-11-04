@@ -23,6 +23,9 @@ function Home() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, thinking]);
 
+  // Use environment variable for API URL
+  const API_URL = process.env.REACT_APP_API_URL || '/api/chat';
+
   const handleSubmit = async () => {
     const prompt = input.trim();
     if (!prompt) return;
@@ -32,7 +35,7 @@ function Home() {
     setThinking(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/chat', {
+      const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, username })
@@ -55,7 +58,8 @@ function Home() {
   return (
     <div
       style={{
-        background: `url('law.webp') no-repeat center center fixed`,
+        // Use public folder for image path
+        background: `url(${process.env.PUBLIC_URL ? process.env.PUBLIC_URL + '/images/law.webp' : '/images/law.webp'}) no-repeat center center fixed`,
         backgroundSize: 'cover',
         minHeight: '100vh',
         display: 'flex',
