@@ -4,8 +4,14 @@
 body {
     font-family: "Segoe UI", sans-serif;
     /* WARNING: File path 'C:/Users/chowd/Downloads/Rule-of-Law.jpg' will NOT work on a web server or other computers. Use a relative path like 'Rule-of-Law.jpg' */
+<<<<<<< HEAD
     background: url("/frontend/build/images/1.webp") no-repeat center center fixed;
     background-size: cover;
+=======
+     /* Background image removed from CSS to avoid build-time resolution errors.
+         Background is set in `Home.jsx` (runtime) which uses PUBLIC_URL and a safe fallback. */
+     background: linear-gradient(180deg, #fafafa 0%, #e8f0f8 100%);
+>>>>>>> parent of bb894c2 (Revert "fix 4")
     
     /* Centering logic: The body is a flex container */
     display: flex;

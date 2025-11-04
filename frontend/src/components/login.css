@@ -2,7 +2,12 @@ body {
   font-family: "Segoe UI", sans-serif;
   
   background-size: cover; 
+<<<<<<< HEAD
   background: url("/frontend/build/images/1.webp") no-repeat center center fixed; /* ✅ use cover instead of contain for full-screen */
+=======
+  /* Background image removed to avoid build-time resolution errors. Use a soft gradient fallback. */
+  background: linear-gradient(180deg, #f7fbff 0%, #dfeffb 100%);
+>>>>>>> parent of bb894c2 (Revert "fix 4")
   display: flex;
   justify-content: flex-start;
   align-items: center;
