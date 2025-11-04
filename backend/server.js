@@ -29,21 +29,34 @@ const allowedOrigins = Array.isArray(CORS_ORIGIN)
       .map((s) => s.trim())
       .filter(Boolean);
 
-// Middleware: dynamic origin check so we can allow multiple origins (including localhost)
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin like mobile apps or curl
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      // Not allowed
-      return callback(new Error('CORS policy: Origin not allowed'), false);
-    },
-    credentials: true,
-  })
-);
+// Log allowed origins for debugging in server logs
+console.log('CORS allowed origins:', allowedOrigins);
+
+// Custom CORS middleware: explicitly set CORS headers when origin is allowed
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // Debug log incoming origin (useful on Vercel to see request origin)
+  if (origin) console.log('Incoming origin:', origin);
+
+  // Allow requests with no origin (curl, server-to-server)
+  if (!origin) return next();
+
+  const isAllowed = allowedOrigins.includes('*') || allowedOrigins.includes(origin);
+
+  if (isAllowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization,Content-Type');
+  }
+
+  // Respond to preflight immediately
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(isAllowed ? 200 : 403);
+  }
+
+  return next();
+});
 app.use(express.json());
 
 // Routes
