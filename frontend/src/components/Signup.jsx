@@ -7,6 +7,17 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // Get API base URL from env var, fall back to relative path
+  const rawApiUrl = process.env.REACT_APP_API_URL || '';
+  let apiBase = rawApiUrl;
+  try {
+    if (apiBase.endsWith('/api/chat')) apiBase = apiBase.replace(/\/api\/chat$/, '/api');
+    if (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1);
+  } catch (e) {
+    apiBase = rawApiUrl;
+  }
+  const SIGNUP_ENDPOINT = apiBase ? `${apiBase}/auth/signup` : '/api/auth/signup';
+
   const signup = async () => {
     if (!username || !password) {
       alert("Please fill all fields.");
@@ -14,7 +25,7 @@ const Signup = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
+      const res = await fetch(SIGNUP_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

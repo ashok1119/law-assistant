@@ -8,6 +8,17 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Get API base URL from env var, fall back to relative path
+  const rawApiUrl = process.env.REACT_APP_API_URL || '';
+  let apiBase = rawApiUrl;
+  try {
+    if (apiBase.endsWith('/api/chat')) apiBase = apiBase.replace(/\/api\/chat$/, '/api');
+    if (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1);
+  } catch (e) {
+    apiBase = rawApiUrl;
+  }
+  const LOGIN_ENDPOINT = apiBase ? `${apiBase}/auth/login` : '/api/auth/login';
+
   const login = async () => {
     setError('');
     if (!username || !password) {
@@ -16,7 +27,7 @@ function Login() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(LOGIN_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
